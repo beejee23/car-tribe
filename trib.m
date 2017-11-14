@@ -1,7 +1,8 @@
 % Tribology data class file
 % ----Created 20170425----
-% This is a simple versio of teh previous iteration. It contains just the
-% structured data.  The idea is to make it easy to trim data and data
+% Brian Graham
+% This is tribology class file that holds all the experiment data
+% The idea is to make it easy to trim data and data
 % subset so I may add methods in the future to aid in trimming this data.
 classdef trib < handle
     
