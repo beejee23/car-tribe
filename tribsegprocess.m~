@@ -145,13 +145,13 @@ for i = 1:nseg
     fce(i,1) = fcf(end);
     fcmin(i,1) = min(fcf);
     fcmax(i,1) = max(fcf);
-    sts(i,1) = ds(i,1)/c{i}.th;
-    ste(i,1) = de(i,1)/c{i}.th;
-    stmin(i,1) = dmin(i,1)/c{i}.th;
-    stmax(i,1) = dmax(i,1)/c{i}.th;
-    intdef(i,1) = trapz(-1*df);
-    intfric(i,1) = trapz(fcf);
+    sts(i,1) = ds(i,1)/c.th;
+    sts(i,1) = d(i,1)/c.th;
+    sts(i,1) = ds(i,1)/c.th;
+    sts(i,1) = ds(i,1)/c.th;
+
     
+    intdef(i,1) = trapz(-1*df);
     cclipped2{i}.d = df;
     cclipped2{i}.fc = fcf;
     
@@ -169,16 +169,7 @@ if nseg > 1
 else
     rehydrate(1,1) = 0;
 end
-
-    
-
-intdeftavg = intdef/segtime;
-intfrictavg = intfric/segtime;
-
-
-
-
-metadata = table(segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,intdef,slope,Rsq,rehydrate);
+metadata = table(segnum,exptime,segtime,speed,force,ds,de,fcs,fce,intdef,slope,Rsq,rehydrate);
 
 % Get cleaned seg structure
 [cclean] = tribsegcombine(cclipped2,1,numel(c));
