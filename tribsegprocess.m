@@ -1,5 +1,39 @@
-function [metadata,cclean] = tribsegprocess(c,numfitpoints)
-%% Caculates metadata and filters raw segments to yield cleaner data to plot
+function [metadata,cclean] = tribsegprocess(c,varargin)
+%% Calculates metadata and filters raw segments to yield cleaner data to plot
+% Optional Name-Pair arguements
+% 
+% 'time' followed by number of seconds of data that you want to fit to get
+% the slopes for the rehydration rate calculation
+%
+% 'points' followed by the number of data that you want to fit to get
+% the slopes for the rehydration rate calculation. 
+%
+% Examples: tribsegprocess(c,'time',50) Take 50 seconds before and after
+% starting sliding
+%
+% Examples: tribsegprocess(c,'points',10) Take 10 data points before and after
+% starting sliding
+%
+% I ran a convergence study because I noticed that the rehydration rate
+% varied greatly depending on the number of points used to calculate the
+% slopes.  I found that after 25 seconds worth of points or more, the
+% value for rehydration rate converged.  Thus, the default for this
+% funciton is to fit 25 seconds of data before and after starting sliding
+%
+%
+if nargin == 3  
+    switch varargin{1} 
+        case 'time'
+            fittime = varargin{2};
+            fitpoints = 0;
+        case 'points'
+            fittime = 0;
+            fitpoints = varargin{2};
+    end    
+else
+    fittime = 25; % seconds.  Rehydration rate calc converges here based on intermittent solute paper tribology data.
+    fitpoints = 0;
+end
 
 nsegcheck = numel(c);
 
@@ -83,6 +117,11 @@ for i = 1:nseg
     end
     %% Get points for calculating deformation slopes with linear regression
     
+    if fitpoints == 0
+        numfitpoints = ceil(fittime/tinterval);
+    elseif fittime == 0
+        numfitpoints = fitpoints;
+    end
     
     if numel(df) > numfitpoints
         
@@ -106,6 +145,8 @@ for i = 1:nseg
         SStotal = (length(y)-1) * var(y);
         Rsq(i,1) = 1 - SSresid/SStotal;
         slope(i,1) = -1*p(1);
+        nanch = isnan(slope(i,1));
+        %i
     elseif cclipped2{i}.speedseg > 0
         y = -1*df;
         x = cclipped2{i}.t;
@@ -116,11 +157,14 @@ for i = 1:nseg
         SSresid = sum(yresid.^2);
         SStotal = (length(y)-1) * var(y);
         Rsq(i,1) = 1 - SSresid/SStotal;
-        
         slope(i,1) = -1*p(1);
+        nanch = isnan(slope(i,1));
+        %i
     else
         slope(i,1) = NaN;
         Rsq(i,1) = NaN;
+        nanch = isnan(slope(i,1));
+        %i
     end
     close all
     
