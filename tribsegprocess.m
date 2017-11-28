@@ -224,7 +224,9 @@ intfrictavg = intfric/segtime;
 
 
 
-metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,intdef,slope,Rsq,rehydrate);
+metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,...
+    sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,...
+    intdef,intfric,intdeftavg,intfrictavg,slope,Rsq,rehydrate);
 
 % Get cleaned seg structure
 [cclean] = tribsegcombine(cclipped2,1,numel(c));

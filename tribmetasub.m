@@ -1,4 +1,4 @@
-function [activityregimen] = tribmetasub(metadata,tstatic,tsliding,cycles,tpassive,speed)
+function [regimenmetadata] = tribmetasub(metadata,tstatic,tsliding,cycles,tpassive,speed)
 %% Take subset of the metadata for a specificed activity regimen
 
 % Build activity profile from segment time and speed estimates
@@ -15,7 +15,8 @@ tdelay = 0.1; % small delay of static time just after last sliding cycle but pri
 segtimeprofile = [repmat([tstatic;tsliding],[cycles,1,1]);tdelay;tpassive];
 speedprofile = [repmat([0;speed],[cycles,1,1]);0;0];
 fulltestprofile = [segtimeprofile,speedprofile];
-
+cyclelabels = [1:cycles;1:cycles];
+cyclenum = [cyclelabels(:);0;0];
 % subset of metadata to compare against
 testdata = [metadata.segtime,metadata.speed];
 
@@ -25,6 +26,8 @@ corrmat = normxcorr2(fulltestprofile,testdata)./3.0375e+05;
 numsegs = size(fulltestprofile,1);
 corr_offset = indmax - numsegs;
 
-activityregimen = metadata(corr_offset+1:corr_offset+numsegs,:);
-
+regimenmetadata = metadata(corr_offset+1:corr_offset+numsegs,:);
+regimenmetadata.cyclenum = cyclenum;
+regimenmetadata.cumsegtime = cumsum(regimenmetadata.segtime);
+regimenmetadata = [regimenmetadata(:,1:5),regimenmetadata(:,23:24),regimenmetadata(:,6:22)];
 end
