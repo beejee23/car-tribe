@@ -203,6 +203,7 @@ end
 
 if nseg > 1
     for i = 2:nseg
+        fname{i,1} = c{i}.filename;
         segtime(i,1) = exptime(i,1)-exptime(i-1,1);
         if (speed(i,1) > 0 & speed(i-1,1) == 0)
             rehydrate(i,1) = slope(i,1) - slope(i-1,1);
@@ -212,6 +213,7 @@ if nseg > 1
     end
 else
     rehydrate(1,1) = 0;
+    fname{1,1} = c{i}.filename;
 end
 
     
@@ -222,7 +224,7 @@ intfrictavg = intfric/segtime;
 
 
 
-metadata = table(segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,intdef,slope,Rsq,rehydrate);
+metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,intdef,slope,Rsq,rehydrate);
 
 % Get cleaned seg structure
 [cclean] = tribsegcombine(cclipped2,1,numel(c));
