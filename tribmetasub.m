@@ -29,5 +29,5 @@ corr_offset = indmax - numsegs;
 regimenmetadata = metadata(corr_offset+1:corr_offset+numsegs,:);
 regimenmetadata.cyclenum = cyclenum;
 regimenmetadata.cumsegtime = cumsum(regimenmetadata.segtime);
-regimenmetadata = [regimenmetadata(:,1:5),regimenmetadata(:,23:24),regimenmetadata(:,6:22)];
+regimenmetadata = [regimenmetadata(:,1:5),regimenmetadata(:,26:27),regimenmetadata(:,6:25)];
 end
