@@ -218,8 +218,8 @@ end
 
     
 
-intdeftavg = intdef/segtime;
-intfrictavg = intfric/segtime;
+intdeftavg = intdef./segtime;
+intfrictavg = intfric./segtime;
 
 
 
