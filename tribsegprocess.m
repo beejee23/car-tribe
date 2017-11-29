@@ -194,6 +194,7 @@ for i = 1:nseg
     stmin(i,1) = dmin(i,1)/c{i}.th;
     stmax(i,1) = dmax(i,1)/c{i}.th;
     intdef(i,1) = trapz(-1*df);
+    intst(i,1) = trapz(-1*df)/c{i}.th;
     intfric(i,1) = trapz(fcf);
     
     cclipped2{i}.d = df;
@@ -219,6 +220,7 @@ end
     
 
 intdeftavg = intdef./segtime;
+intsttavg = intst./segtime;
 intfrictavg = intfric./segtime;
 
 
@@ -226,7 +228,7 @@ intfrictavg = intfric./segtime;
 
 metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,...
     sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,...
-    intdef,intfric,intdeftavg,intfrictavg,slope,Rsq,rehydrate);
+    intdef,intst,intfric,intdeftavg,intsttavg,intfrictavg,slope,Rsq,rehydrate);
 
 % Get cleaned seg structure
 [cclean] = tribsegcombine(cclipped2,1,numel(c));
