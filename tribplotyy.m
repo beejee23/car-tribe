@@ -87,7 +87,7 @@ if isempty(obj.sstart) == 0
 end
 
 % Plot data
-py1 = plot(timemins,y1,'.')
+py1 = plot(timemins,y1,'.');
 
 ylim([0,y1plotmax]);
 ylabel(y1label);
@@ -97,7 +97,7 @@ hold off
 yyaxis right
 
 hold on
-py2 = plot(timemins,y2,'.')
+py2 = plot(timemins,y2,'.');
 ylabel(y2label)
 ylim([0 y2plotmax]);
 xlim([0, max(timemins)]);

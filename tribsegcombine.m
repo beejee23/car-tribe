@@ -22,7 +22,7 @@ function [combinedsegs] = tribsegcombine(segcells,startindex,endindex)
 
         else
             idxoffset = segcells{idx(i)}.sstart-numel(t) - 1;
-            t = [t; segcells{idx(i)}.t - segcells{idx(i)}.t(1) + t(end) + mean(diff(segcells{idx(i)}.t))];
+            t = [t; segcells{idx(i)}.t - segcells{idx(i)}.t(1) + max(t) + nanmean(diff(segcells{idx(i)}.t))];
             s = [s; segcells{idx(i)}.s];
             nf = [nf; segcells{idx(i)}.nf];
             ff = [ff; segcells{idx(i)}.ff];

@@ -1,4 +1,4 @@
-function [metadata,cclean] = tribsegprocess(c,varargin)
+function [metadata,cclean,cclipped2] = tribsegprocess(c,varargin)
 %% Calculates metadata and filters raw segments to yield cleaner data to plot
 % Optional Name-Pair arguements
 % 
@@ -193,11 +193,12 @@ for i = 1:nseg
     ste(i,1) = de(i,1)/c{i}.th;
     stmin(i,1) = dmin(i,1)/c{i}.th;
     stmax(i,1) = dmax(i,1)/c{i}.th;
-    intdef(i,1) = trapz(-1*df);
-    intst(i,1) = trapz(-1*df)/c{i}.th;
-    intfric(i,1) = trapz(fcf);
+    intdef(i,1) = trapz(cclipped2{i}.t,-1*df);
+    intst(i,1) = trapz(cclipped2{i}.t,-1*df)/c{i}.th;
+    intfric(i,1) = trapz(cclipped2{i}.t,fcf);
     
     cclipped2{i}.d = df;
+    cclipped2{i}.st = (cclipped2{i}.d)./c{i}.th;
     cclipped2{i}.fc = fcf;
     
 end
