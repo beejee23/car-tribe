@@ -189,10 +189,18 @@ for i = 1:nseg
     fce(i,1) = fcf(end);
     fcmin(i,1) = min(fcf);
     fcmax(i,1) = max(fcf);
-    sts(i,1) = ds(i,1)/c{i}.th;
-    ste(i,1) = de(i,1)/c{i}.th;
-    stmin(i,1) = dmin(i,1)/c{i}.th;
-    stmax(i,1) = dmax(i,1)/c{i}.th;
+    if isempty(c{i}.th) == 0
+        sts(i,1) = ds(i,1)/c{i}.th;
+        ste(i,1) = de(i,1)/c{i}.th;
+        stmin(i,1) = dmin(i,1)/c{i}.th;
+        stmax(i,1) = dmax(i,1)/c{i}.th;
+    else
+        sts(i,1) = ds(i,1)/nan;
+        ste(i,1) = de(i,1)/nan;
+        stmin(i,1) = dmin(i,1)/nan;
+        stmax(i,1) = dmax(i,1)/nan;
+    end
+    
     intdef(i,1) = trapz(cclipped2{i}.t,-1*df);
     intst(i,1) = trapz(cclipped2{i}.t,-1*df)/c{i}.th;
     intfric(i,1) = trapz(cclipped2{i}.t,fcf);
