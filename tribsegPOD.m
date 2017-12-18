@@ -5,7 +5,7 @@ function [segments] = tribsegPOD(objin,objraw)
 n = numel(objin.speedseg);
 
 % Quick check for if the test was deformation only
-if n < 1
+if n < 1 | (n == 1 & isempty(objin.sstart)==1)
     segments{1} = tribclip(objin,1,numel(objin.t));
     segments{1}.speedseg = 0;
     segments{1}.sstart = [];
