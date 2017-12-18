@@ -234,7 +234,7 @@ if nseg > 1
 else
     rehydrate(1,1) = 0;
     fname{1,1} = c{i}.filename;
-    segtime(i,1) = exptime(1,1)-exptime(1-1,1);
+    segtime = exptime;
 end
 
     
