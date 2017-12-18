@@ -24,7 +24,7 @@ sliding = imclose(IM2,strel([1 1 1 1 1]'));
 sregions = regionprops(sliding,'PixelList');
 
 % Check for speed changes using derivative and threshold
-speedchanges = find(abs(diff(sfilt.*sliding)./diff(objin.t)) > 0.1);
+speedchanges = find(abs(diff(sfilt.*sliding)./diff(objin.t)) > 10); % The is the line you may have to edit if code fails
 
 % This check is for if the file was deformation only
 if isempty(speedchanges) == 1
