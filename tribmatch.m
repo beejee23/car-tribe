@@ -1,4 +1,4 @@
-function [datasegs,wholeregimen,segmentprofiles] = tribmetasub(metadatain,tribsegcellarray,tstatic,tsliding,cycles,tpassive,speed,f_load,f_passive)
+function [datasegs,wholeregimen,segmentprofiles] = tribmatch(metadatain,tribsegcellarray,tstatic,tsliding,cycles,tpassive,speed,f_load,f_passive)
 %% Takes the subset of the metadata for a specificed activity regimen
 % Build activity profile from segment time and speed estimates
 % datasegs provides the metadata for each segment in a regimen

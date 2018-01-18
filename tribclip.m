@@ -4,6 +4,9 @@ function [objout] = tribclip(objin,startindex,endindex)
     objout = trib;
     objout.filename = objin.filename;
     objout.th = objin.th;
+    objout.r = objin.r;
+    objout.nfeq = objin.nfeq;
+    objout.deq = objin.deq;
     timesub = objin.t(startindex:endindex);
     objout.t = timesub;
     objout.s = objin.s(startindex:endindex);
@@ -19,7 +22,5 @@ function [objout] = tribclip(objin,startindex,endindex)
     objout.loadseg = objin.loadseg-startindex + 1;
     objout.sstart = objin.sstart-startindex + 1;
     objout.send = objin.send-startindex + 1;
-    if isempty(objin.st) == 0
-        objout.st = objin.st(startindex:endindex);
-    end
+    objout.calcparams;
 end

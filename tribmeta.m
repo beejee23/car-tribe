@@ -1,4 +1,4 @@
-function [metadata,cclean,cclipped2] = tribsegprocess(c,varargin)
+function [metadata,validsegments] = tribmeta(segments,varargin)
 %% Calculates metadata and filters raw segments to yield cleaner data to plot
 % Optional Name-Pair arguements
 % 
@@ -35,26 +35,26 @@ else
     fitpoints = 0;
 end
 
-nsegcheck = numel(c);
+nsegcheck = numel(segments);
 
 for i = 1:nsegcheck
-        blankcheck(i) = ~isempty(diff(c{i}.t));
+        blankcheck(i) = ~isempty(diff(segments{i}.t));
 end
 
-c = c(blankcheck);
-nseg = numel(c);
+segments = segments(blankcheck);
+nseg = numel(segments);
 
 for i = 1:nseg
     %% Crop beginning of segment
     % This section eliminated points with a different sample rate located at
     % the beginning of a segment
-    endindex = numel(c{i}.t);
+    endindex = numel(segments{i}.t);
     if i > 1
-        sampratediff = (diff(c{i}.t));
+        sampratediff = (diff(segments{i}.t));
         m = mean(sampratediff,'omitnan');
         ms = m+std(sampratediff,'omitnan');
         sampratecheck = sampratediff > ms;
-        timecheck = c{i}.t(2:end).*[sampratecheck];
+        timecheck = segments{i}.t(2:end).*[sampratecheck];
         % use time check to see which sample rate was used for more time
         if sampratecheck(1) == 1
             bwcc = bwconncomp(sampratecheck);
@@ -62,9 +62,9 @@ for i = 1:nseg
         else
             startindex = 1;
         end
-        cclipped{i} = tribclip(c{i},startindex,endindex);
+        cclipped{i} = tribclip(segments{i},startindex,endindex);
     else
-        cclipped{i} = tribclip(c{i},1,endindex);
+        cclipped{i} = tribclip(segments{i},1,endindex);
     end
     
     %% Crop end of segment
@@ -81,25 +81,25 @@ for i = 1:nseg
     if TFcheck.NumObjects > 0
         if isempty(find(TFcheck.PixelIdxList{end} == numel(TF))) == 0;
             endcut = TFcheck.PixelIdxList{end}(1) - 1;
-            cclipped2{i} = tribclip(cclipped{i},1,endcut);
+            validsegments{i} = tribclip(cclipped{i},1,endcut);
         else
-            cclipped2{i} = cclipped{i};
+            validsegments{i} = cclipped{i};
         end
     else
-        cclipped2{i} = cclipped{i};
+        validsegments{i} = cclipped{i};
     end
     
-    drplot = plot(cclipped2{i}.t,cclipped2{i}.d,'-o');
+    %drplot = plot(cclipped2{i}.t,cclipped2{i}.d,'-o');
     
     
     
     %% Calculate filter size
     % Time interval between data points
-    tinterval = nanmean(cclipped2{i}.t(2:end) - cclipped2{i}.t(1:end-1));
+    tinterval = nanmean(validsegments{i}.t(2:end) - validsegments{i}.t(1:end-1));
     dataptspermin = 60/tinterval;
     dataptsperminodd = 2*floor(dataptspermin/2)+1;
-    if numel(cclipped2{i}.d) < dataptsperminodd
-        idx = 2*floor(numel(cclipped2{i}.d)/2)+1;
+    if numel(validsegments{i}.d) < dataptsperminodd
+        idx = 2*floor(numel(validsegments{i}.d)/2)+1;
         if idx <= dataptsperminodd
             deffiltsize = idx-2;
         else
@@ -109,12 +109,12 @@ for i = 1:nseg
         deffiltsize = dataptsperminodd;
     end
     if deffiltsize < 2;
-        df = cclipped2{i}.d;
-        fcf = cclipped2{i}.fc;
+        df = validsegments{i}.d;
     else
-        df = sgolayfilt(cclipped2{i}.d,2,deffiltsize);
-        fcf = sgolayfilt(cclipped2{i}.fc,2,deffiltsize);
+        df = sgolayfilt(validsegments{i}.d,2,deffiltsize);
     end
+    % Friction response is not handled well by this filter
+    fcf = validsegments{i}.fc;
     %% Get points for calculating deformation slopes with linear regression
     
     if fitpoints == 0
@@ -125,12 +125,12 @@ for i = 1:nseg
     
     if numel(df) > numfitpoints
         
-        if cclipped2{i}.speedseg == 0
+        if validsegments{i}.speedseg == 0
             y = -1*df(end-numfitpoints-1:end);
-            x = cclipped2{i}.t(end-numfitpoints-1:end);
-        elseif cclipped2{i}.speedseg > 0
+            x = validsegments{i}.t(end-numfitpoints-1:end);
+        elseif validsegments{i}.speedseg > 0
             y = -1*df(1:numfitpoints);
-            x = cclipped2{i}.t(1:numfitpoints);
+            x = validsegments{i}.t(1:numfitpoints);
         else
             y = NaN;
             x = NaN;
@@ -147,9 +147,9 @@ for i = 1:nseg
         slope(i,1) = -1*p(1);
         nanch = isnan(slope(i,1));
         %i
-    elseif cclipped2{i}.speedseg > 0
+    elseif validsegments{i}.speedseg > 0
         y = -1*df;
-        x = cclipped2{i}.t;
+        x = validsegments{i}.t;
         p = polyfit(x,y,1);
         yfit = polyval(p,x);
         yfit =  p(1) * x + p(2);
@@ -172,9 +172,9 @@ for i = 1:nseg
     
     % get metadata
     segnum(i,1) = i;
-    exptime(i,1) = ((cclipped2{i}.t(end))./60);
-    speed(i,1) = cclipped2{i}.speedseg;
-    force(i,1) = round(cclipped2{i}.loadseg,1);
+    exptime(i,1) = ((validsegments{i}.t(end))./60);
+    speed(i,1) = validsegments{i}.speedseg;
+    force(i,1) = round(validsegments{i}.loadseg,1);
     
     %     ds(i,1) = cclipped2{i}.d(1);
     %     de(i,1) = cclipped2{i}.d(end);
@@ -190,11 +190,11 @@ for i = 1:nseg
     fcmin(i,1) = min(fcf);
     fcmax(i,1) = max(fcf);
     
-    if isempty(c{i}.th) == 0
-        sts(i,1) = ds(i,1)/c{i}.th;
-        ste(i,1) = de(i,1)/c{i}.th;
-        stmin(i,1) = dmin(i,1)/c{i}.th;
-        stmax(i,1) = dmax(i,1)/c{i}.th;
+    if isempty(segments{i}.th) == 0
+        sts(i,1) = ds(i,1)/segments{i}.th;
+        ste(i,1) = de(i,1)/segments{i}.th;
+        stmin(i,1) = dmin(i,1)/segments{i}.th;
+        stmax(i,1) = dmax(i,1)/segments{i}.th;
     else
         sts(i,1) = ds(i,1)/nan;
         ste(i,1) = de(i,1)/nan;
@@ -202,19 +202,19 @@ for i = 1:nseg
         stmax(i,1) = dmax(i,1)/nan;
     end
     
-    intdef(i,1) = trapz(cclipped2{i}.t,-1*df);
-    cclipped2{i}.d = df;
+    intdef(i,1) = trapz(validsegments{i}.t,-1*df);
+    validsegments{i}.d = df;
 
-    if isempty(c{i}.th) == 0
-        intst(i,1) = trapz(cclipped2{i}.t,-1*df)/c{i}.th;
-        cclipped2{i}.st = (cclipped2{i}.d)./c{i}.th;
+    if isempty(segments{i}.th) == 0
+        intst(i,1) = trapz(validsegments{i}.t,-1*df)/segments{i}.th;
+        validsegments{i}.st = (validsegments{i}.d)./segments{i}.th;
     else
-        intst(i,1) = trapz(cclipped2{i}.t,-1*df)/nan;
-        cclipped2{i}.st = (cclipped2{i}.d)./nan;
+        intst(i,1) = trapz(validsegments{i}.t,-1*df)/nan;
+        validsegments{i}.st = (validsegments{i}.d)./nan;
     end
     
-    intfric(i,1) = trapz(cclipped2{i}.t,fcf);
-    cclipped2{i}.fc = fcf;
+    intfric(i,1) = trapz(validsegments{i}.t,fcf);
+    validsegments{i}.fc = fcf;
     
     
     
@@ -223,7 +223,7 @@ end
 
 if nseg > 1
     for i = 2:nseg
-        fname{i,1} = c{i}.filename;
+        fname{i,1} = segments{i}.filename;
         segtime(i,1) = exptime(i,1)-exptime(i-1,1);
         if (speed(i,1) > 0 & speed(i-1,1) == 0)
             rehydrate(i,1) = slope(i,1) - slope(i-1,1);
@@ -233,7 +233,7 @@ if nseg > 1
     end
 else
     rehydrate(1,1) = 0;
-    fname{1,1} = c{i}.filename;
+    fname{1,1} = segments{i}.filename;
     segtime = exptime;
 end
 
@@ -250,7 +250,4 @@ metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,...
     sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,...
     intdef,intst,intfric,intdeftavg,intsttavg,intfrictavg,slope,Rsq,rehydrate);
 
-% Get cleaned seg structure
-[cclean] = tribsegcombine(cclipped2,1,numel(c));
-    
 end

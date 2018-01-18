@@ -1,6 +1,31 @@
 function [] = tribplotyy(obj,yleft,yright)
 %% Standardized plotting of 2 tribology data
 % Plots double y axis graphs showing two tribology variabels over time
+%
+% tribplotyy(obj,yleft,yright)
+%
+% yleft and yright options:
+% s   -->  speed (mm/s)
+% nf  -->  normal force (N)
+% ff  -->  friction force (N)
+% fc  -->  friction coefficient 
+% d   -->  deformation (microns)
+% st  -->  strain
+% a   -->  contact radius (mm)
+% ca  -->  contact area (mm^2)
+% sh  -->  shear stress (MPa)
+% cp  -->  contact pressure (MPa)
+% eef -->  effective modulus (MPa)
+% ip  -->  interstitial pressure (MPa)
+% fl  -->  fluid load support fraction
+%
+% Axis limits are calcaluted but some data
+% may be cut off depending on the experiment.
+%
+% Example:
+% Plot deformation on left axis
+% Plot friction on right axis
+% >> tribplotyy(obj,'d','fc')
 
 switch yleft
     
@@ -19,8 +44,7 @@ switch yleft
     case 's'
         y1 = obj.s;
         y1label = 'Speed (mm/s)';
-        y1plotmax = 101;
-        
+        y1plotmax = 101;    
     case 'd'
         y1 = -1.*obj.d;
         y1label = 'Deformation (\mum)';
@@ -29,6 +53,35 @@ switch yleft
         y1 = -1.*obj.st;
         y1label = 'Strain (\epsilon)';
         y1plotmax = nanmedian(y1)*2;
+    case 'a'
+        y1 = -1.*obj.st;
+        y1label = 'Contact Radius (mm)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'ca'
+        y1 = -1.*obj.st;
+        y1label = 'Contact Area (mm^2)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'cp'
+        y1 = -1.*obj.st;
+        y1label = 'Contact Pressure (MPa)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'sh'
+        y1 = -1.*obj.st;
+        y1label = 'Shear Stress (MPa)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'eef'
+        y1 = -1.*obj.st;
+        y1label = 'Effective Modulus (MPa)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'ip'
+        y1 = -1.*obj.st;
+        y1label = 'Interstitial Pressure (MPa)';
+        y1plotmax = nanmedian(y1)*2;
+    case 'fl'
+        y1 = -1.*obj.st;
+        y1label = 'Fluid Load Support Fraction';
+        y1plotmax = nanmedian(y1)*2;
+
 end
 
 switch yright
@@ -41,7 +94,6 @@ switch yright
         y2 = obj.ff;
         y2label = 'Friction Force (N)';
         y2plotmax = nanmedian(y2)*2;
-        
     case 'fc'
         y2 = obj.fc;
         y2label = 'Friction Coefficient (\mu)';
@@ -49,18 +101,43 @@ switch yright
     case 's'
         y2 = obj.s;
         y2label = 'Speed (mm/s)';
-        y2plotmax = 101;
-        
+        y2plotmax = 101; 
     case 'd'
         y2 = -1.*obj.d;
         y2label = 'Deformation (\mum)';
         y2plotmax = nanmedian(y2)*2;
-        
     case 'st'
         y2 = -1.*obj.st;
         y2label = 'Strain (\epsilon)';
         y2plotmax = nanmedian(y2)*2;
-        
+    case 'a'
+        y2 = -1.*obj.st;
+        y2label = 'Contact Radius (mm)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'ca'
+        y2 = -1.*obj.st;
+        y2label = 'Contact Area (mm^2)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'cp'
+        y2 = -1.*obj.st;
+        y2label = 'Contact Pressure (MPa)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'sh'
+        y2 = -1.*obj.st;
+        y2label = 'Shear Stress (MPa)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'eef'
+        y2 = -1.*obj.st;
+        y2label = 'Effective Modulus (MPa)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'ip'
+        y2 = -1.*obj.st;
+        y2label = 'Interstitial Pressure (MPa)';
+        y2plotmax = nanmedian(y2)*2;
+    case 'fl'
+        y2 = -1.*obj.st;
+        y2label = 'Fluid Load Support Fraction';
+        y2plotmax = nanmedian(y2)*2;
 end
 
 %% Plotting setup

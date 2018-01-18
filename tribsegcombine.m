@@ -19,7 +19,10 @@ function [combinedsegs] = tribsegcombine(segcells,startindex,endindex)
             loadseg = segcells{idx(i)}.loadseg;
             sstart = segcells{idx(i)}.sstart;
             send = segcells{idx(i)}.send;
-
+            th = segcells{idx(i)}.th;
+            r = segcells{idx(i)}.r;
+            nfeq = segcells{idx(i)}.nfeq;
+            deq = segcells{idx(i)}.deq;
         else
             idxoffset = segcells{idx(i)}.sstart-numel(t) - 1;
             t = [t; segcells{idx(i)}.t - segcells{idx(i)}.t(1) + max(t) + nanmean(diff(segcells{idx(i)}.t))];
@@ -48,5 +51,11 @@ function [combinedsegs] = tribsegcombine(segcells,startindex,endindex)
     combinedsegs.loadseg = loadseg;
     combinedsegs.sstart = sstart;
     combinedsegs.send = send;
+    combinedsegs.th = th;
+    combinedsegs.r = r;
+    combinedsegs.nfeq = nfeq;
+    combinedsegs.deq = deq;
+    combinedsegs.calcparams;
+    
     
 end

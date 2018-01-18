@@ -1,4 +1,4 @@
-function [startendpts] = tribsegPOD_loadseg(staticsegment)
+function [startendpts] = tribsegloadcheck(staticsegment)
     % Evaluates static phase, using normal force to differentiate between
     % unloaded and loaded experiment segments
     
