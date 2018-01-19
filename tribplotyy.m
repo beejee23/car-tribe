@@ -54,31 +54,31 @@ switch yleft
         y1label = 'Strain (\epsilon)';
         y1plotmax = nanmedian(y1)*2;
     case 'a'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.a;
         y1label = 'Contact Radius (mm)';
         y1plotmax = nanmedian(y1)*2;
     case 'ca'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.ca;
         y1label = 'Contact Area (mm^2)';
         y1plotmax = nanmedian(y1)*2;
     case 'cp'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.cp;
         y1label = 'Contact Pressure (MPa)';
         y1plotmax = nanmedian(y1)*2;
     case 'sh'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.sh;
         y1label = 'Shear Stress (MPa)';
         y1plotmax = nanmedian(y1)*2;
     case 'eef'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.eef;
         y1label = 'Effective Modulus (MPa)';
         y1plotmax = nanmedian(y1)*2;
     case 'ip'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.ip;
         y1label = 'Interstitial Pressure (MPa)';
         y1plotmax = nanmedian(y1)*2;
     case 'fl'
-        y1 = -1.*obj.st;
+        y1 = -1.*obj.fl;
         y1label = 'Fluid Load Support Fraction';
         y1plotmax = nanmedian(y1)*2;
 
@@ -111,23 +111,23 @@ switch yright
         y2label = 'Strain (\epsilon)';
         y2plotmax = nanmedian(y2)*2;
     case 'a'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.a;
         y2label = 'Contact Radius (mm)';
         y2plotmax = nanmedian(y2)*2;
     case 'ca'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.ca;
         y2label = 'Contact Area (mm^2)';
         y2plotmax = nanmedian(y2)*2;
     case 'cp'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.cp;
         y2label = 'Contact Pressure (MPa)';
         y2plotmax = nanmedian(y2)*2;
     case 'sh'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.sh;
         y2label = 'Shear Stress (MPa)';
         y2plotmax = nanmedian(y2)*2;
     case 'eef'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.eef;
         y2label = 'Effective Modulus (MPa)';
         y2plotmax = nanmedian(y2)*2;
     case 'ip'
@@ -135,7 +135,7 @@ switch yright
         y2label = 'Interstitial Pressure (MPa)';
         y2plotmax = nanmedian(y2)*2;
     case 'fl'
-        y2 = -1.*obj.st;
+        y2 = -1.*obj.fl;
         y2label = 'Fluid Load Support Fraction';
         y2plotmax = nanmedian(y2)*2;
 end
