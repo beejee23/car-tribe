@@ -56,20 +56,47 @@ endin = ind+numsegs-2;
 datasegs = metadata(startind:endin,:);
 datasegs.cyclenum = cyclenum;
 datasegs.cumsegtime = cumsum(datasegs.segtime);
-datasegs = [datasegs(:,1:5),datasegs(:,28:29),datasegs(:,6:27)];
+datasegs = [datasegs(:,1:5),datasegs(:,end-1:end),datasegs(:,6:end-2)];
 
 % Get the trib class object containing whole activity regimen
 % Currently this exludes the short erronesouly segments mentioend earlier,
 % but this could be adjusted in the future
 segmentprofiles = tribsegcombine(d,[startind],[endin]);
 
-% Calculate integrated and time averaged deformation, strain, friction
+% Calculate integrated and time averaged parameters but first check to make
+% sure they exist
+thcheck = ~isempty(segmentprofiles.th);
+rcheck = ~isempty(segmentprofiles.r);
+nfeqcheck = ~isempty(segmentprofiles.nfeq);
+deqcheck = ~isempty(segmentprofiles.deq);
+    
 intdef = trapz(segmentprofiles.t,-1*segmentprofiles.d);
-intst = trapz(segmentprofiles.t,-1*segmentprofiles.st);
 intfric = trapz(segmentprofiles.t,segmentprofiles.fc);
+if thcheck == 1
+    intst = trapz(segmentprofiles.t,-1*segmentprofiles.st);
+else
+    intst = nan;
+end
+if rcheck == 1
+    intsh = trapz(segmentprofiles.t,segmentprofiles.sh);
+    intcp = trapz(segmentprofiles.t,segmentprofiles.cp);
+else
+    intsh = nan;
+    intcp = nan;
+end
+
+if (thcheck & rcheck & nfeqcheck & deqcheck) == 1
+    intip = trapz(segmentprofiles.t,segmentprofiles.ip);
+else
+    intip = nan;
+end
+
 intdeftavg = intdef/(segmentprofiles.t(end)-segmentprofiles.t(1));
-intsttavg = intst/(segmentprofiles.t(end)-segmentprofiles.t(1));
 intfrictavg = intfric/(segmentprofiles.t(end)-segmentprofiles.t(1));
+intsttavg = intst/(segmentprofiles.t(end)-segmentprofiles.t(1));
+intshtavg = intsh/(segmentprofiles.t(end)-segmentprofiles.t(1));
+intcptavg = intcp/(segmentprofiles.t(end)-segmentprofiles.t(1));
+intiptavg = intip/(segmentprofiles.t(end)-segmentprofiles.t(1));
 
 % Create table of these values
 wholeregimen = table(intdef,intst,intfric,intdeftavg,intsttavg,intfrictavg);

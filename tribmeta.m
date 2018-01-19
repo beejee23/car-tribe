@@ -113,8 +113,7 @@ for i = 1:nseg
     else
         df = sgolayfilt(validsegments{i}.d,2,deffiltsize);
     end
-    % Friction response is not handled well by this filter
-    fcf = validsegments{i}.fc;
+    
     %% Get points for calculating deformation slopes with linear regression
     
     if fitpoints == 0
@@ -185,12 +184,20 @@ for i = 1:nseg
     de(i,1) = df(end);
     dmin(i,1) = min(df);
     dmax(i,1) = max(df);
-    fcs(i,1) = fcf(1);
-    fce(i,1) = fcf(end);
-    fcmin(i,1) = min(fcf);
-    fcmax(i,1) = max(fcf);
+    % Friction response is not handled well by this filter
+    fcs(i,1) = validsegments{i}.fc(1);
+    fce(i,1) = validsegments{i}.fc(end);
+    fcmin(i,1) = min(validsegments{i}.fc);
+    fcmax(i,1) = max(validsegments{i}.fc);
     
-    if isempty(segments{i}.th) == 0
+    %check for calculated parameters
+    thcheck = ~isempty(validsegments{i}.th);
+    rcheck = ~isempty(validsegments{i}.r);
+    nfeqcheck = ~isempty(validsegments{i}.nfeq);
+    deqcheck = ~isempty(validsegments{i}.deq);
+    
+    % thickness-based parameters
+    if thcheck == 1
         sts(i,1) = ds(i,1)/segments{i}.th;
         ste(i,1) = de(i,1)/segments{i}.th;
         stmin(i,1) = dmin(i,1)/segments{i}.th;
@@ -202,10 +209,55 @@ for i = 1:nseg
         stmax(i,1) = dmax(i,1)/nan;
     end
     
+    % radius-based parameters
+    if rcheck == 1
+        as(i,1) = sqrt(2.*validsegments{i}.r.*-1.*(df(1)./1000)); 
+        ae(i,1) = sqrt(2.*validsegments{i}.r.*-1.*(df(end)./1000));
+        cas(i,1) = 3.141593.*as(i,1).^2;
+        cae(i,1) = 3.141593.*ae(i,1).^2;
+        shs(i,1) = validsegments{i}.ff(1)./cas(i,1);
+        she(i,1) = validsegments{i}.ff(end)./cae(i,1);
+        cps(i,1) = validsegments{i}.nf(1)./cas(i,1);
+        cpe(i,1) = validsegments{i}.nf(end)./cae(i,1);
+        
+    else
+        as(i,1) = nan;
+        ae(i,1) = nan;
+        cas(i,1) = nan;
+        cae(i,1) = nan;
+        shs(i,1) = nan;
+        she(i,1) = nan;
+        cps(i,1) = nan;
+        cpe(i,1) = nan;
+    end
+    
+    % equilibrium modulus based parameters
+    if (thcheck & rcheck & nfeqcheck & deqcheck) == 1
+        eefs(i,1) = (validsegments{i}.nf(1).*segments{i}.th)./...
+            (2.*3.141593.*validsegments{i}.r.*((-1.*df(1))./1000).^2);
+        eefe(i,1) = (validsegments{i}.nf(end).*segments{i}.th)./...
+            (2.*3.141593.*validsegments{i}.r.*((-1.*df(end))./1000).^2);
+        ips(i,1) = (validsegments{i}.eef(1)-segments{i}.eeq).*((-1.*df(1))./segments{i}.th)./1000;
+        ipe(i,1) = (validsegments{i}.eef(end)-segments{i}.eeq).*((-1.*df(end))./segments{i}.th)./1000;
+        fls(i,1) = (eefs(i,1)-segments{i}.eeq)./eefs(i,1);
+        fle(i,1) = (eefe(i,1)-segments{i}.eeq)./eefe(i,1);        
+    else 
+        eefs(i,1) = nan;
+        eefe(i,1) = nan;
+        ips(i,1) = nan;
+        ipe(i,1) = nan;
+        fls(i,1) = nan;
+        fle(i,1) = nan;
+    end
+    
+    
+    % integrated parameters
     intdef(i,1) = trapz(validsegments{i}.t,-1*df);
-    validsegments{i}.d = df;
-
-    if isempty(segments{i}.th) == 0
+    intfric(i,1) = trapz(validsegments{i}.t,validsegments{i}.fc);
+    validsegments{i}.d = df; % add smoothed version back into code
+    
+    % thickness-based integrated parameters 
+    if thcheck == 1
         intst(i,1) = trapz(validsegments{i}.t,-1*df)/segments{i}.th;
         validsegments{i}.st = (validsegments{i}.d)./segments{i}.th;
     else
@@ -213,12 +265,21 @@ for i = 1:nseg
         validsegments{i}.st = (validsegments{i}.d)./nan;
     end
     
-    intfric(i,1) = trapz(validsegments{i}.t,fcf);
-    validsegments{i}.fc = fcf;
+    % radius based integrated parameters
+    if rcheck == 1
+        intsh(i,1) = trapz(validsegments{i}.t,validsegments{i}.sh);
+        intcp(i,1) = trapz(validsegments{i}.t,validsegments{i}.cp);
+    else
+        intsh(i,1) = nan;
+        intcp(i,1) = nan;
+    end
     
-    
-    
-    
+    % equilibrium modulus-based integrated parameters
+    if (thcheck & rcheck & nfeqcheck & deqcheck) == 1
+        intip(i,1) = trapz(validsegments{i}.t,validsegments{i}.ip);
+    else
+        intip(i,1) = nan;
+    end
 end
 
 if nseg > 1
@@ -242,12 +303,15 @@ end
 intdeftavg = intdef./segtime;
 intsttavg = intst./segtime;
 intfrictavg = intfric./segtime;
-
-
-
+intshavg = intsh./segtime;
+intcptavg = intcp./segtime;
+intiptavg = intip./segtime;
 
 metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,...
     sts,ste,stmin,stmax,fcs,fce,fcmin,fcmax,...
-    intdef,intst,intfric,intdeftavg,intsttavg,intfrictavg,slope,Rsq,rehydrate);
+    as,ae,cas,cae,shs,she,cps,cpe,eefs,eefe,ips,ipe,fls,fle,...
+    intdef,intst,intfric,intsh,intcp,intip,...
+    intdeftavg,intsttavg,intfrictavg,intshavg,intcptavg,intiptavg,...
+    slope,Rsq,rehydrate);
 
 end
