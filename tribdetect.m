@@ -29,6 +29,9 @@ slidingnoblips = bwareaopen(slidinginitial,3);
 % dropped for some reason
 sliding = imclose(slidingnoblips,strel([1 1 1 1 1]'));
 
+% Set friction coefficient and force to zero when not sliding
+objout.fc(~sliding) = 0;
+objout.ff(~sliding) = 0;
 % Segment periods of sliding into distinct groups
 speriods = regionprops(sliding,'PixelList');
 

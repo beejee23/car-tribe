@@ -40,8 +40,11 @@ potentialindices = strfind(metadata.speed',speedprofile');
 
 % logic to handle more than 1 match (usually the 1x30 is done 2-3 times)
 if numel(potentialindices) > 1
-    [~,ind2] = max(metadata.force(potentialindices+2));
-    ind = potentialindices(ind2);
+    loadbefore = metadata.force(potentialindices-2);
+    passivecheck = loadbefore > mean(metadata.force)/2;
+    remainingpotentialindices = potentialindices(passivecheck);
+    [~,ind2] = max(metadata.force(remainingpotentialindices+2));
+    ind = remainingpotentialindices(ind2);
 else
     ind = potentialindices;
 end
