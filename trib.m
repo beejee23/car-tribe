@@ -73,9 +73,9 @@ classdef trib < handle
             
             % params that require both thickness and radius
             if (thcheck & rcheck & nfeqcheck & deqcheck) == 1
-                obj.eeq = (obj.nfeq.*obj.th)./(2.*3.141593.*obj.r.*(obj.deq./1000).^2); % MPa
-                obj.eef = (obj.nf.*obj.th)./(2.*3.141593.*obj.r.*((-1.*obj.d)./1000).^2); % MPa
-                obj.ip = (obj.eef-obj.eeq).*((-1.*obj.d)./obj.th)./1000; % MPa
+                obj.eeq = (obj.nfeq.*obj.th./1000)./(2.*3.141593.*obj.r.*(obj.deq./1000).^2); % MPa
+                obj.eef = (obj.nf.*obj.th./1000)./(2.*3.141593.*obj.r.*((-1.*obj.d)./1000).^2); % MPa
+                obj.ip = (obj.eef-obj.eeq).*((-1.*obj.d)./obj.th); % MPa
                 obj.fl = (obj.eef-obj.eeq)./obj.eef; % fraction
             end
             

@@ -233,12 +233,12 @@ for i = 1:nseg
     
     % equilibrium modulus based parameters
     if (thcheck & rcheck & nfeqcheck & deqcheck) == 1
-        eefs(i,1) = (validsegments{i}.nf(1).*segments{i}.th)./...
+        eefs(i,1) = (validsegments{i}.nf(1).*segments{i}.th./1000)./...
             (2.*3.141593.*validsegments{i}.r.*((-1.*df(1))./1000).^2);
-        eefe(i,1) = (validsegments{i}.nf(end).*segments{i}.th)./...
+        eefe(i,1) = (validsegments{i}.nf(end).*segments{i}.th./1000)./...
             (2.*3.141593.*validsegments{i}.r.*((-1.*df(end))./1000).^2);
-        ips(i,1) = (validsegments{i}.eef(1)-segments{i}.eeq).*((-1.*df(1))./segments{i}.th)./1000;
-        ipe(i,1) = (validsegments{i}.eef(end)-segments{i}.eeq).*((-1.*df(end))./segments{i}.th)./1000;
+        ips(i,1) = (validsegments{i}.eef(1)-segments{i}.eeq).*((-1.*df(1))./segments{i}.th);
+        ipe(i,1) = (validsegments{i}.eef(end)-segments{i}.eeq).*((-1.*df(end))./segments{i}.th);
         fls(i,1) = (eefs(i,1)-segments{i}.eeq)./eefs(i,1);
         fle(i,1) = (eefe(i,1)-segments{i}.eeq)./eefe(i,1);        
     else 
