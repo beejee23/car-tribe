@@ -43,7 +43,7 @@ speriods = regionprops(sliding,'PixelList');
 speedtimediff = abs(diff(sfilt.*sliding)./diff(objin.t));
 
 % Theshold for speedtimediff to count as a n-z to n-z speed change
-speedtimediffthresh = 0.01;
+speedtimediffthresh = 1;
 
 % Indices of potential speed changes detected usign threshold methods
 potentialspeedchanges = find(speedtimediff > speedtimediffthresh);
