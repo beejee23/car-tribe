@@ -70,7 +70,7 @@ else
     m = 1;
     nzspeedchange = potentialspeedchanges(1);
 
-    % Check to make sure there aren't too potential speed changes close
+    % Check to make sure there aren't two potential speed changes close
     % toegther by comparing the timestamp for the indices of each
     % consecutive pairing of potential speed changes.
     % Loop through the consectuive pairings
