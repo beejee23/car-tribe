@@ -190,6 +190,12 @@ for i = 1:nseg
     fcmin(i,1) = min(validsegments{i}.fc);
     fcmax(i,1) = max(validsegments{i}.fc);
     
+    % Data points over friction threshold
+    fcover03(i,1) = sum((validsegments{i}.fc) > 0.03);
+    fcover05(i,1) = sum((validsegments{i}.fc) > 0.05);
+    fcover08(i,1) = sum((validsegments{i}.fc) > 0.08);
+    fcover10(i,1) = sum((validsegments{i}.fc) > 0.10);
+    
     %check for calculated parameters
     thcheck = ~isempty(validsegments{i}.th);
     rcheck = ~isempty(validsegments{i}.r);
@@ -312,6 +318,6 @@ metadata = table(fname,segnum,exptime,segtime,speed,force,ds,de,dmin,dmax,...
     as,ae,cas,cae,shs,she,cps,cpe,eefs,eefe,ips,ipe,fls,fle,...
     intdef,intst,intfric,intsh,intcp,intip,...
     intdeftavg,intsttavg,intfrictavg,intshavg,intcptavg,intiptavg,...
-    slope,Rsq,rehydrate);
+    slope,Rsq,rehydrate,fcover03,fcover05,fcover08,fcover10);
 
 end
